@@ -7,7 +7,7 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-	<context:component-scan base-package="helpscout.service, helpscout.controller">
+	<context:component-scan base-package="midas.service, midas.controller, midas.repository">
 	</context:component-scan>
 
 </beans>
