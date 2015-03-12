@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package midas.model;
+package midas.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +27,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "CUSTOMERS")
-public class Customer {
+public class CustomerEntity {
 	@Id
 	@GeneratedValue
 	private Integer id;

@@ -15,8 +15,16 @@
  */
 package midas.controller;
 
-import midas.resource.Customer;
+import javax.transaction.Transactional;
+import javax.ws.rs.NotFoundException;
 
+import midas.domain.Customer;
+import midas.entity.CustomerEntity;
+import midas.repository.CustomerRepository;
+
+import org.dozer.DozerBeanMapper;
+import org.dozer.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -25,15 +33,56 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 public class CustomerController {
+
+	@Autowired
+	private CustomerRepository customerRepository;
+
+	private final Mapper mapper = new DozerBeanMapper();
+	
+	public Customer create(final Customer customer) {
+		CustomerEntity entity = mapToEntity(customer);
+		entity = customerRepository.save(entity);
+		return mapToDomain(entity);
+	}
+
+	@Transactional
 	public Customer retrieve(final Integer id) {
-		return new Customer(id);
+		final CustomerEntity entity = findEntity(id);
+		return mapToDomain(entity);
 	}
 
-	public Customer update(final Integer id) {
-		return new Customer(id);
+	@Transactional
+	public Customer update(final Integer id, final Customer customer) {
+		final CustomerEntity entity = findEntity(id);
+		mapToEntity(customer, entity);
+		customerRepository.save(entity);
+		return mapToDomain(entity);
 	}
 
+	@Transactional
 	public Customer delete(final Integer id) {
-		return new Customer(id);
+		final CustomerEntity entity = findEntity(id);
+		customerRepository.delete(id);
+		return mapToDomain(entity);
+	}
+
+	private CustomerEntity findEntity(final Integer id) {
+		final CustomerEntity entity = customerRepository.findOne(id);
+		if (entity == null) {
+			throw new NotFoundException();
+		}
+		return entity;
+	}
+
+	private CustomerEntity mapToEntity(final Customer domain) {
+		return mapper.map(domain, CustomerEntity.class);
+	}
+
+	private void mapToEntity(final Customer domain, final CustomerEntity entity) {
+		mapper.map(domain, entity);
+	}
+
+	private Customer mapToDomain(final CustomerEntity entity) {
+		return mapper.map(entity, Customer.class);
 	}
 }

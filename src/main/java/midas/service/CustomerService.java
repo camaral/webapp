@@ -32,7 +32,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import midas.controller.CustomerController;
-import midas.resource.Customer;
+import midas.domain.Customer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,13 +51,13 @@ public class CustomerService {
 	private CustomerController customerController;
 
 	@POST
-	public Response create(final Customer user,
+	public Response create(final Customer customer,
 			@QueryParam("reload") @DefaultValue("false") final boolean reload)
 			throws URISyntaxException {
-		final Integer id = 0;
+		final Customer created = customerController.create(customer);
 
-		return Response.created(new URI("/customer/" + id))
-				.entity(new Customer()).build();
+		return Response.created(new URI("/customer/" + created.getId()))
+				.entity(created).build();
 	}
 
 	@GET
@@ -69,8 +69,9 @@ public class CustomerService {
 	@PUT
 	@Path("{id}")
 	public Customer update(@PathParam("id") final Integer id,
+			final Customer customer,
 			@QueryParam("reload") @DefaultValue("false") final boolean reload) {
-		return customerController.update(id);
+		return customerController.update(id, customer);
 	}
 
 	@DELETE

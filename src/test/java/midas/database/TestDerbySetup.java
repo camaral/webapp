@@ -20,8 +20,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
-import midas.model.Customer;
+import midas.entity.CustomerEntity;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -31,27 +32,30 @@ import org.junit.Test;
 public class TestDerbySetup {
 
 	@Test
+	@Ignore
 	public void testSetup() {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("test");  
-		EntityManager em = emf.createEntityManager();                               
-		EntityTransaction tx = em.getTransaction();                                 
+		EntityManagerFactory emf = Persistence
+				.createEntityManagerFactory("test");
+		EntityManager em = emf.createEntityManager();
+		EntityTransaction tx = em.getTransaction();
 
-		Customer test = em.find(Customer.class, 1);                                         
-		if (test == null) {                                                         
-		  test = new Customer();                                                        
-		  test.setFirstName("caio");                                                              
-		  test.setLastName("amaral");                                                  
+		CustomerEntity test = em.find(CustomerEntity.class, 1);
+		if (test == null) {
+			test = new CustomerEntity();
+			test.setFirstName("caio");
+			test.setLastName("amaral");
 
-		  tx.begin();                                                               
-		  em.persist(test);                                                         
-		  tx.commit();
-		  
-		  test = em.find(Customer.class, 1);
-		}                                                                           
+			tx.begin();
+			em.persist(test);
+			tx.commit();
 
-		System.out.format("Test{id=%s, name=%s %s}\n", test.getId(), test.getFirstName(), test.getLastName());            
+			test = em.find(CustomerEntity.class, 1);
+		}
 
-		em.close();                                                                 
-		emf.close();    
+		System.out.format("Test{id=%s, name=%s %s}\n", test.getId(),
+				test.getFirstName(), test.getLastName());
+
+		em.close();
+		emf.close();
 	}
 }

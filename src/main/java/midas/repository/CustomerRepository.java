@@ -15,13 +15,14 @@
  */
 package midas.repository;
 
-import org.springframework.stereotype.Repository;
+import midas.entity.CustomerEntity;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * @author caio.amaral
  *
  */
-@Repository
-public class CustomerRepository {
+public interface CustomerRepository extends JpaRepository<CustomerEntity, Integer> {
 
 }
