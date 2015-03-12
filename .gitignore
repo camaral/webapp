@@ -25,4 +25,4 @@ sheeco.iml
 
 # derby
 derby.log
-test/
+/test/
