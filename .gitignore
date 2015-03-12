@@ -22,3 +22,7 @@ target/
 # intellij
 .idea
 sheeco.iml
+
+# derby
+derby.log
+test/
