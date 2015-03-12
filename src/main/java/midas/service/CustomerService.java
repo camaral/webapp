@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package helpscout.service;
-
-import helpscout.controller.CustomerController;
-import helpscout.resource.Customer;
+package midas.service;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,6 +30,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import midas.controller.CustomerController;
+import midas.resource.Customer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

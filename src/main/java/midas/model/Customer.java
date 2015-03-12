@@ -13,35 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package helpscout.resource;
+package midas.model;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * @author caio.amaral
  *
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(Include.NON_NULL)
+@Entity
+@Table(name = "CUSTOMERS")
 public class Customer {
+	@Id
+	@GeneratedValue
 	private Integer id;
+
+	@Column(name = "FIRST_NAME")
 	private String firstName;
+	@Column(name = "LAST_NAME")
 	private String lastName;
-
-	public Customer() {
-	}
-
-	public Customer(final Integer id) {
-		this.id = id;
-	}
 
 	/**
 	 * @return the id

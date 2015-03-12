@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package helpscout.controller;
+package midas.controller;
 
-import helpscout.resource.Customer;
+import midas.resource.Customer;
 
 import org.springframework.stereotype.Controller;
 
