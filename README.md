@@ -20,3 +20,19 @@ $ cd ..
 $ rm -rf webapp.git
 # Remove our temporary local repository
 ```
+
+To run the application
+
+```bash
+$ mvn jetty:run
+```
+
+To call the sample service either use midas.service.CustomerServiceTest or curl
+
+```bash
+$ curl "http://localhost:9095/customer" -X POST -d "{\"firstName\":\"caio\"}" -H "Content-Type: application/json" -H "Accept: application/json"
+# {"id":1,"firstName":"caio"}
+
+$ curl -v "http://localhost:9095/customer/1" -H "Accept: application/json"
+# {"id":1,"firstName":"caio"}
+```
