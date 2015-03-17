@@ -15,7 +15,6 @@
  */
 package midas.controller;
 
-import javax.transaction.Transactional;
 import javax.ws.rs.NotFoundException;
 
 import midas.domain.Customer;
@@ -26,6 +25,7 @@ import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author caio.amaral
@@ -41,13 +41,14 @@ public class CustomerController {
 	@Qualifier("customerMapper")
 	private Mapper mapper;
 
+	@Transactional
 	public Customer create(final Customer customer) {
 		CustomerEntity entity = mapToEntity(customer);
 		entity = customerRepository.save(entity);
 		return mapToDomain(entity);
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public Customer retrieve(final Integer id) {
 		final CustomerEntity entity = findEntity(id);
 		return mapToDomain(entity);
