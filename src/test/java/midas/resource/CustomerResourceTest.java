@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package midas.service;
+package midas.resource;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -46,9 +46,9 @@ import org.junit.Test;
  * @author caio.amaral
  *
  */
-public class CustomerServiceTest {
+public class CustomerResourceTest {
 
-	private static CustomerServiceApi customerService;
+	private static CustomerResourceApi customerResource;
 
 	@BeforeClass
 	public static void setup() {
@@ -56,7 +56,7 @@ public class CustomerServiceTest {
 		final ResteasyWebTarget target = client
 				.target("http://localhost:9095/");
 
-		customerService = target.proxy(CustomerServiceApi.class);
+		customerResource = target.proxy(CustomerResourceApi.class);
 	}
 
 	@Test
@@ -65,7 +65,7 @@ public class CustomerServiceTest {
 		customer.setFirstName("caio");
 		customer.setLastName("amaral");
 
-		Response response = customerService.create(customer, true);
+		Response response = customerResource.create(customer, true);
 
 		Assert.assertEquals(201, response.getStatus());
 		Assert.assertNotNull(response.getHeaderString(HttpHeaders.LOCATION));
@@ -83,12 +83,12 @@ public class CustomerServiceTest {
 		customer.setFirstName("Caio");
 		customer.setLastName("Amaral");
 
-		Response response = customerService.create(customer, true);
+		Response response = customerResource.create(customer, true);
 		Customer created = response.readEntity(Customer.class);
 
 		Assert.assertNotNull(created.getId());
 
-		Customer found = customerService.retrieve(created.getId());
+		Customer found = customerResource.retrieve(created.getId());
 
 		Assert.assertEquals(created.getId(), found.getId());
 		Assert.assertEquals("Caio", found.getFirstName());
@@ -101,7 +101,7 @@ public class CustomerServiceTest {
 		customer.setFirstName("Caio");
 		customer.setLastName("Amaral");
 
-		Response response = customerService.create(customer, true);
+		Response response = customerResource.create(customer, true);
 		Customer created = response.readEntity(Customer.class);
 
 		Integer id = created.getId();
@@ -109,64 +109,49 @@ public class CustomerServiceTest {
 		Assert.assertNotNull(id);
 
 		created.setFirstName("Kyle");
-		Customer updated = customerService.update(id, created, true);
+		Customer updated = customerResource.update(id, created, true);
 
 		Assert.assertEquals(id, updated.getId());
 		Assert.assertEquals("Kyle", updated.getFirstName());
 		Assert.assertEquals("Amaral", updated.getLastName());
 
-		Customer found = customerService.retrieve(id);
+		Customer found = customerResource.retrieve(id);
 
 		Assert.assertEquals(id, found.getId());
 		Assert.assertEquals("Kyle", found.getFirstName());
 		Assert.assertEquals("Amaral", found.getLastName());
 	}
 
-	@Test
+	@Test(expected = NotFoundException.class)
 	public void testDelete() {
 		Customer customer = new Customer();
 		customer.setFirstName("Caio");
 		customer.setLastName("Amaral");
 
-		Response response = customerService.create(customer, true);
+		Response response = customerResource.create(customer, true);
 		Customer created = response.readEntity(Customer.class);
 
 		Integer id = created.getId();
 
 		Assert.assertNotNull(id);
 
-		Customer deleted = customerService.delete(id);
+		Customer deleted = customerResource.delete(id);
 
 		Assert.assertEquals(created.getId(), deleted.getId());
 		Assert.assertEquals("Caio", deleted.getFirstName());
 		Assert.assertEquals("Amaral", deleted.getLastName());
 
-		try {
-			customerService.delete(id);
-			Assert.fail("Should have thrown NotFoundException");
-		} catch (NotFoundException ex) {
-			// OK
-		}
+		customerResource.delete(id);
 	}
 
-	@Test
+	@Test(expected = NotFoundException.class)
 	public void testRetrieveNotFound() {
-		try {
-			customerService.retrieve(-10);
-			Assert.fail("Should have thrown NotFoundException");
-		} catch (NotFoundException ex) {
-			// OK
-		}
+		customerResource.retrieve(-10);
 	}
 
-	@Test
+	@Test(expected = NotFoundException.class)
 	public void testUpdateNotFound() {
-		try {
-			customerService.update(-10, new Customer(), true);
-			Assert.fail("Should have thrown NotFoundException");
-		} catch (NotFoundException ex) {
-			// OK
-		}
+		customerResource.update(-10, new Customer(), true);
 	}
 
 	@Test
@@ -175,7 +160,7 @@ public class CustomerServiceTest {
 		customer.setFirstName("Caio");
 		customer.setLastName("Amaral");
 
-		Response response = customerService.create(customer, true);
+		Response response = customerResource.create(customer, true);
 		Customer created = response.readEntity(Customer.class);
 
 		Integer id = created.getId();
@@ -184,13 +169,13 @@ public class CustomerServiceTest {
 
 		created.setId(id + 100);
 		created.setFirstName("Kyle");
-		Customer updated = customerService.update(id, created, true);
+		Customer updated = customerResource.update(id, created, true);
 
 		Assert.assertEquals(id, updated.getId());
 		Assert.assertEquals("Kyle", updated.getFirstName());
 		Assert.assertEquals("Amaral", updated.getLastName());
 
-		Customer found = customerService.retrieve(id);
+		Customer found = customerResource.retrieve(id);
 
 		Assert.assertEquals(id, found.getId());
 		Assert.assertEquals("Kyle", found.getFirstName());
@@ -201,7 +186,7 @@ public class CustomerServiceTest {
 @Path("customer")
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-interface CustomerServiceApi {
+interface CustomerResourceApi {
 
 	@POST
 	public Response create(final Customer customer,

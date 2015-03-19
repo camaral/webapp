@@ -15,68 +15,77 @@
  */
 package midas.service;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import javax.ws.rs.NotFoundException;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import midas.controller.CustomerController;
 import midas.domain.Customer;
+import midas.entity.CustomerEntity;
+import midas.repository.CustomerRepository;
 
+import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author caio.amaral
  *
  */
 @Service
-@Path("customer")
-@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public class CustomerService {
 
 	@Autowired
-	private CustomerController customerController;
+	private CustomerRepository customerRepository;
 
-	@POST
-	public Response create(final Customer customer,
-			@QueryParam("reload") @DefaultValue("false") final boolean reload)
-			throws URISyntaxException {
-		final Customer created = customerController.create(customer);
+	@Autowired
+	@Qualifier("customerMapper")
+	private Mapper mapper;
 
-		return Response.created(new URI("/customer/" + created.getId()))
-				.entity(created).build();
+	@Transactional
+	public Customer create(final Customer customer) {
+		CustomerEntity entity = mapToEntity(customer);
+		entity = customerRepository.save(entity);
+		return mapToDomain(entity);
 	}
 
-	@GET
-	@Path("{id}")
-	public Customer retrieve(@PathParam("id") final Integer id) {
-		return customerController.retrieve(id);
+	@Transactional(readOnly = true)
+	public Customer retrieve(final Integer id) {
+		final CustomerEntity entity = findEntity(id);
+		return mapToDomain(entity);
 	}
 
-	@PUT
-	@Path("{id}")
-	public Customer update(@PathParam("id") final Integer id,
-			final Customer customer,
-			@QueryParam("reload") @DefaultValue("false") final boolean reload) {
-		return customerController.update(id, customer);
+	@Transactional
+	public Customer update(final Integer id, final Customer customer) {
+		final CustomerEntity entity = findEntity(id);
+		mapToEntity(customer, entity);
+		customerRepository.save(entity);
+		return mapToDomain(entity);
 	}
 
-	@DELETE
-	@Path("{id}")
-	public Customer delete(@PathParam("id") final Integer id) {
-		return customerController.delete(id);
+	@Transactional
+	public Customer delete(final Integer id) {
+		final CustomerEntity entity = findEntity(id);
+		customerRepository.delete(id);
+		return mapToDomain(entity);
+	}
+
+	private CustomerEntity findEntity(final Integer id) {
+		final CustomerEntity entity = customerRepository.findOne(id);
+		if (entity == null) {
+			throw new NotFoundException();
+		}
+		return entity;
+	}
+
+	private CustomerEntity mapToEntity(final Customer domain) {
+		return mapper.map(domain, CustomerEntity.class);
+	}
+
+	private void mapToEntity(final Customer domain, final CustomerEntity entity) {
+		mapper.map(domain, entity);
+	}
+
+	private Customer mapToDomain(final CustomerEntity entity) {
+		return mapper.map(entity, Customer.class);
 	}
 }
