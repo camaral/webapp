@@ -1,5 +1,5 @@
-# Basic Web Application
-Every REST API project should start here  
+# Initial Backend Web Application
+Every REST API project should start here(somewhat a maven archetype)  
 - Spring 
 - Resteasy
 - Spring Data JPA(Hibernate + Derby)
