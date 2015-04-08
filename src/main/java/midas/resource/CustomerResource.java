@@ -20,14 +20,12 @@ import java.net.URISyntaxException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -51,8 +49,7 @@ public class CustomerResource {
 	private CustomerService customerService;
 
 	@POST
-	public Response create(final Customer customer,
-			@QueryParam("reload") @DefaultValue("false") final boolean reload)
+	public Response create(final Customer customer)
 			throws URISyntaxException {
 		final Customer created = customerService.create(customer);
 
@@ -69,8 +66,7 @@ public class CustomerResource {
 	@PUT
 	@Path("{id}")
 	public Customer update(@PathParam("id") final Integer id,
-			final Customer customer,
-			@QueryParam("reload") @DefaultValue("false") final boolean reload) {
+			final Customer customer) {
 		return customerService.update(id, customer);
 	}
 
