@@ -9,7 +9,7 @@ Every REST API project should start here
 To create a new project from this one, first go to github and create an empty repo(e.g. 'new-repository'), then do the following.
 
 ```bash
-$ git clone --bare https://github.com/camaral1/webapp.git
+$ git clone --bare https://github.com/camaral/webapp.git
 # Make a bare clone of the repository
 
 $ cd webapp.git
