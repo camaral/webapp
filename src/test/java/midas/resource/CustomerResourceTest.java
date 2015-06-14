@@ -17,7 +17,6 @@ package midas.resource;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
@@ -25,7 +24,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -65,7 +63,7 @@ public class CustomerResourceTest {
 		customer.setFirstName("caio");
 		customer.setLastName("amaral");
 
-		Response response = customerResource.create(customer, true);
+		Response response = customerResource.create(customer);
 
 		Assert.assertEquals(201, response.getStatus());
 		Assert.assertNotNull(response.getHeaderString(HttpHeaders.LOCATION));
@@ -83,7 +81,7 @@ public class CustomerResourceTest {
 		customer.setFirstName("Caio");
 		customer.setLastName("Amaral");
 
-		Response response = customerResource.create(customer, true);
+		Response response = customerResource.create(customer);
 		Customer created = response.readEntity(Customer.class);
 
 		Assert.assertNotNull(created.getId());
@@ -101,7 +99,7 @@ public class CustomerResourceTest {
 		customer.setFirstName("Caio");
 		customer.setLastName("Amaral");
 
-		Response response = customerResource.create(customer, true);
+		Response response = customerResource.create(customer);
 		Customer created = response.readEntity(Customer.class);
 
 		Integer id = created.getId();
@@ -109,7 +107,7 @@ public class CustomerResourceTest {
 		Assert.assertNotNull(id);
 
 		created.setFirstName("Kyle");
-		Customer updated = customerResource.update(id, created, true);
+		Customer updated = customerResource.update(id, created);
 
 		Assert.assertEquals(id, updated.getId());
 		Assert.assertEquals("Kyle", updated.getFirstName());
@@ -128,7 +126,7 @@ public class CustomerResourceTest {
 		customer.setFirstName("Caio");
 		customer.setLastName("Amaral");
 
-		Response response = customerResource.create(customer, true);
+		Response response = customerResource.create(customer);
 		Customer created = response.readEntity(Customer.class);
 
 		Integer id = created.getId();
@@ -151,7 +149,7 @@ public class CustomerResourceTest {
 
 	@Test(expected = NotFoundException.class)
 	public void testUpdateNotFound() {
-		customerResource.update(-10, new Customer(), true);
+		customerResource.update(-10, new Customer());
 	}
 
 	@Test
@@ -160,7 +158,7 @@ public class CustomerResourceTest {
 		customer.setFirstName("Caio");
 		customer.setLastName("Amaral");
 
-		Response response = customerResource.create(customer, true);
+		Response response = customerResource.create(customer);
 		Customer created = response.readEntity(Customer.class);
 
 		Integer id = created.getId();
@@ -169,7 +167,7 @@ public class CustomerResourceTest {
 
 		created.setId(id + 100);
 		created.setFirstName("Kyle");
-		Customer updated = customerResource.update(id, created, true);
+		Customer updated = customerResource.update(id, created);
 
 		Assert.assertEquals(id, updated.getId());
 		Assert.assertEquals("Kyle", updated.getFirstName());
@@ -189,8 +187,7 @@ public class CustomerResourceTest {
 interface CustomerResourceApi {
 
 	@POST
-	public Response create(final Customer customer,
-			@QueryParam("reload") @DefaultValue("false") final boolean reload);
+	public Response create(final Customer customer);
 
 	@GET
 	@Path("{id}")
@@ -199,8 +196,7 @@ interface CustomerResourceApi {
 	@PUT
 	@Path("{id}")
 	public Customer update(@PathParam("id") final Integer id,
-			final Customer customer,
-			@QueryParam("reload") @DefaultValue("false") final boolean reload);
+			final Customer customer);
 
 	@DELETE
 	@Path("{id}")
